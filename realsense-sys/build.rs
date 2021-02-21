@@ -37,8 +37,22 @@ fn main() {
             .next()
             .expect("fail find librealsense2 include directory");
 
+        /// Gets the first (of one) include path in include_paths
+        /// *used as a compiler flag later*
+        let include_flag = format!(
+        "-I{}",
+        library
+            .include_paths
+            .iter()
+            .next()
+            .expect("no include dir")
+            .to_str()
+            .unwrap()
+        );
+
         let bindings = bindgen::Builder::default()
             .clang_arg("-fno-inline-functions")
+            .clang_arg(include_flag)
             .header(include_dir.join("rs.h").to_str().unwrap())
             .header(
                 include_dir
